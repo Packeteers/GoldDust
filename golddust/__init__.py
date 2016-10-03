@@ -86,8 +86,10 @@ class Package:
 
     @property
     def tarball(self):
+        """The tarball file name for this package."""
         return "{}-{}.tar.bz2".format(self.name, self.version)
 
     @property
     def sig_file(self):
+        """The detached signature file name for this package."""
         return "{}.sig".format(self.tarball)
