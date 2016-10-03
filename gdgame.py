@@ -48,8 +48,9 @@ def main():
 
     if not os.path.isdir(gdhome):
         if not args.noprompt:
-            if not gdcli.ask_confirm("GoldDust doesn't appear to be installed. "
-                                     "Install GoldDust?", False):
+            sys.stdout.write("GoldDust doesn't appear to be installed. ")
+            sys.stdout.flush()
+            if not gdcli.ask_confirm("Install GoldDust?", False):
                 return
             # If the user never specified --gdhome, ask them where they might
             # want GoldDust installed.
