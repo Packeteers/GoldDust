@@ -138,10 +138,10 @@ class GlobalConfig:
         Raises:
             KeyError: The repository doesn't exist in the configuration.
         """
-        target = self.get_repository(repo)["mirrors"]
-        if mirror in target:
+        target = self.get_repository(repo)
+        if mirror in target["mirrors"]:
             raise KeyError("Mirror already exists for repository.")
-        target.append(mirror)
+        target["mirrors"].append(mirror)
 
 
 class Package:
