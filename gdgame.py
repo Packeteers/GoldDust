@@ -23,6 +23,11 @@ import golddust
 import gdcli
 
 
+def newinstance():
+    """Create a game instance."""
+    pass
+
+
 def main():
     argparser = argparse.ArgumentParser(description=("Manage modded game "
                                                      "installations with "
@@ -39,6 +44,22 @@ def main():
     argparser.add_argument('-v', '--verbose',
                            help="Output more detailed status messages.",
                            action='store_true')
+    subparser = argparser.add_subparsers()
+
+    # 'newinstance' subcommand
+    newinst_parse = subparser.add_parser('newinstance')
+    newinst_parse.add_argument('-n', '--name',
+                               help="The short name of the instance. Should "
+                                    "be alphanumeric and will be converted to "
+                                    "lowercase.", required=True)
+    newinst_parse.add_argument('-p', '--path',
+                               help="The path to the root of this instance.",
+                               required=True)
+    newinst_parse.add_argument('-N', '--longname',
+                               help="The user-friendly name for this "
+                                    "instance.")
+    newinst_parse.set_defaults(func=newinstance)
+
     args = argparser.parse_args()
 
     gdhome = args.gdhome
