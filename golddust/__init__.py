@@ -181,4 +181,6 @@ class GoldDust:
 
     def load_global_config(self):
         """Load the global configuration from a file."""
-        pass
+        config = open(os.path.join(self.root, _CONFIG_FILE_NAME), "r")
+        self.config.__dict__ = json.load(config)
+        config.close()
