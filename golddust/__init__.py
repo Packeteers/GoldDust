@@ -25,6 +25,9 @@ import os
 import platform
 
 
+_CONFIG_FILE_NAME = "config.json"
+
+
 def default_home_dir():
     """Get the default home directory path on this platform.
 
@@ -167,12 +170,12 @@ class GoldDust:
         self.config = GlobalConfig()
         self.root = root
 
-        if os.path.isfile(os.path.join(self.root, "config.json")):
+        if os.path.isfile(os.path.join(self.root, _CONFIG_FILE_NAME)):
             self.load_global_config()
 
     def save_global_config(self):
         """Save the global configuration."""
-        config = open(os.path.join(self.root, "config.json"), "w+")
+        config = open(os.path.join(self.root, _CONFIG_FILE_NAME), "w+")
         json.dump(self.config.__dict__, config, sort_keys=True, indent=4)
         config.close()
 
