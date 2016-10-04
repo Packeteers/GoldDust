@@ -175,7 +175,7 @@ class GoldDust:
 
     def save_global_config(self):
         """Save the global configuration."""
-        config = open(os.path.join(self.root, _CONFIG_FILE_NAME), "w+")
+        config = open(os.path.join(self.root, _CONFIG_FILE_NAME), "w")
         json.dump(self.config.__dict__, config, sort_keys=True, indent=4)
         config.close()
 
