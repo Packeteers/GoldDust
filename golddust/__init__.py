@@ -168,7 +168,7 @@ class GoldDust:
     """An instance of the GoldDust package manager."""
     def __init__(self, root):
         self.config = GlobalConfig()
-        self.root = root
+        self.root = os.path.abspath(os.path.expanduser(root))
 
         if os.path.isfile(os.path.join(self.root, _CONFIG_FILE_NAME)):
             self.load_global_config()
