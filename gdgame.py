@@ -23,74 +23,84 @@ import golddust
 import gdcli
 
 
-def newinstance():
-    """Create a game instance."""
-    pass
+class GDGameTool:
+    """Manage modded game installations with GoldDust."""
+    def __init__(self):
+        argparser = argparse.ArgumentParser(description=("Manage modded game "
+                                                         "installations with "
+                                                         "GoldDust."))
+        argparser.add_argument('-H', '--gdhome',
+                               help=("The location of the GoldDust "
+                                     "installation. This contains things like "
+                                     "the primary config as well as package "
+                                     "databases."),
+                               metavar="PATH")
+        argparser.add_argument('-q', '--noprompt',
+                               help=("Disable user interaction, assume "
+                                     "defaults unless otherwise specified."),
+                               action='store_true')
+        argparser.add_argument('-v', '--verbose',
+                               help="Output more detailed status messages.",
+                               action='store_true')
+        subparser = argparser.add_subparsers()
+
+        # 'newinstance' subcommand
+        newinst_parse = subparser.add_parser('newinstance')
+        newinst_parse.add_argument('-n', '--name',
+                                   help="The short name of the instance. "
+                                        "Should be alphanumeric and will be "
+                                        "converted to lowercase.",
+                                   required=True)
+        newinst_parse.add_argument('-p', '--path',
+                                   help="The path to the root of this "
+                                        "instance.",
+                                   required=True)
+        newinst_parse.add_argument('-N', '--longname',
+                                   help="The user-friendly name for this "
+                                        "instance.")
+        newinst_parse.set_defaults(func=self.newinstance)
+
+        self.args = argparser.parse_args()
+
+        self.gdhome = self.args.gdhome
+
+        if not self.args.gdhome:
+            self.gdhome = golddust.default_home_dir()
+
+        if not os.path.isdir(self.gdhome):
+            if not self.args.noprompt:
+                sys.stdout.write("GoldDust doesn't appear to be installed. ")
+                sys.stdout.flush()
+                if not gdcli.ask_confirm("Install GoldDust?", False):
+                    return
+                # If the user never specified --gdhome, ask them where they
+                # might want GoldDust installed.
+                if not self.args.gdhome:
+                    gdhome = gdcli.ask_string("Where should GoldDust be "
+                                              "installed?",
+                                              self.gdhome)
+
+            self.gdhome = os.path.abspath(os.path.expanduser(self.gdhome))
+
+            if self.args.verbose:
+                sys.stdout.write("Installing GoldDust to "
+                                 "'{}'...\n".format(self.gdhome))
+                sys.stdout.flush()
+
+            golddust.install_home_dir(self.gdhome)
+
+            if self.args.verbose:
+                sys.stdout.write("GoldDust successfully installed!\n")
+                sys.stdout.flush()
+
+    def check_installed(self):
+        """Check if GoldDust is installed at the gdhome directory."""
 
 
-def main():
-    argparser = argparse.ArgumentParser(description=("Manage modded game "
-                                                     "installations with "
-                                                     "GoldDust."))
-    argparser.add_argument('-H', '--gdhome',
-                           help=("The location of the GoldDust installation. "
-                                 "This contains things like the primary "
-                                 "config as well as package databases."),
-                           metavar="PATH")
-    argparser.add_argument('-q', '--noprompt',
-                           help=("Disable user interaction, assume defaults "
-                                 "unless otherwise specified."),
-                           action='store_true')
-    argparser.add_argument('-v', '--verbose',
-                           help="Output more detailed status messages.",
-                           action='store_true')
-    subparser = argparser.add_subparsers()
-
-    # 'newinstance' subcommand
-    newinst_parse = subparser.add_parser('newinstance')
-    newinst_parse.add_argument('-n', '--name',
-                               help="The short name of the instance. Should "
-                                    "be alphanumeric and will be converted to "
-                                    "lowercase.", required=True)
-    newinst_parse.add_argument('-p', '--path',
-                               help="The path to the root of this instance.",
-                               required=True)
-    newinst_parse.add_argument('-N', '--longname',
-                               help="The user-friendly name for this "
-                                    "instance.")
-    newinst_parse.set_defaults(func=newinstance)
-
-    args = argparser.parse_args()
-
-    gdhome = args.gdhome
-
-    if not args.gdhome:
-        gdhome = golddust.default_home_dir()
-
-    if not os.path.isdir(gdhome):
-        if not args.noprompt:
-            sys.stdout.write("GoldDust doesn't appear to be installed. ")
-            sys.stdout.flush()
-            if not gdcli.ask_confirm("Install GoldDust?", False):
-                return
-            # If the user never specified --gdhome, ask them where they might
-            # want GoldDust installed.
-            if not args.gdhome:
-                gdhome = gdcli.ask_string("Where should GoldDust be installed?",
-                                          gdhome)
-
-        gdhome = os.path.abspath(os.path.expanduser(gdhome))
-
-        if args.verbose:
-            sys.stdout.write("Installing GoldDust to '{}'...\n".format(gdhome))
-            sys.stdout.flush()
-
-        golddust.install_home_dir(gdhome)
-
-        if args.verbose:
-            sys.stdout.write("GoldDust successfully installed!\n")
-            sys.stdout.flush()
+    def newinstance(self):
+        """Create a game instance."""
+        pass
 
 
 if __name__ == "__main__":
-    main()
+    GDGameTool()
