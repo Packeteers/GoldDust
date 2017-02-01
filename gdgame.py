@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-#  Copyright 2015-2016 John "LuaMilkshake" Marion
+#  Copyright 2015-2017 John "LuaMilkshake" Marion
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import gdcli
 class GDGameTool:
     """Manage modded game installations with GoldDust."""
     def __init__(self):
+        self._golddust = None
         argparser = argparse.ArgumentParser(description=("Manage modded game "
                                                          "installations with "
                                                          "GoldDust."))
@@ -59,6 +60,17 @@ class GDGameTool:
                                    help="The user-friendly name for this "
                                         "instance.")
 
+        # 'deleteinstance' subcommand
+        newinst_parse = subparser.add_parser('deleteinstance')
+        newinst_parse.add_argument('-n', '--name',
+                                   help="The short name of the instance. "
+                                        "Should be alphanumeric and will be "
+                                        "converted to lowercase.",
+                                   required=True)
+        newinst_parse.add_argument('-R', '--deletefiles',
+                                   help="Delete the game files as well.",
+                                   action='store_true')
+
         self.args = argparser.parse_args()
         if not self.args.gdhome:
             self.gdhome = golddust.default_home_dir()
@@ -67,6 +79,15 @@ class GDGameTool:
 
         if not os.path.isdir(self.gdhome):
             self.gd_not_installed()
+
+        self._golddust = golddust.GoldDust(self.gdhome)
+
+        if self.args.subcommand == "newinstance":
+            self.new_instance()
+        elif self.args.subcommand == "deleteinstance":
+            self.delete_instance()
+        else:
+            argparser.print_usage()
 
     def gd_not_installed(self):
         """Prompt the user (unless --noprompt) to install GoldDust."""
@@ -95,9 +116,36 @@ class GDGameTool:
             sys.stdout.write("GoldDust successfully installed!\n")
             sys.stdout.flush()
 
-    def newinstance(self):
-        """Create a game instance."""
-        pass
+    def new_instance(self):
+        """Create a game instance.
+        """
+        if self.args.verbose:
+            sys.stdout.write("Creating instance "
+                             "'{}' at '{}'\n".format(self.args.name,
+                                                     self.args.path))
+            sys.stdout.flush()
+
+        self._golddust.create_instance(self.args.name, self.args.longname,
+                                       self.args.path)
+
+        if self.args.verbose:
+            sys.stdout.write("Instance '{}' created successfully.\n"
+                             .format(self.args.name))
+            sys.stdout.flush()
+
+    def delete_instance(self):
+        """Delete a game instance.
+        """
+        if self.args.verbose:
+            sys.stdout.write("Removing instance '{}'\n".format(self.args.name))
+            sys.stdout.flush()
+
+        self._golddust.remove_instance(self.args.name,
+                                       remove_game_files=self.args.deletefiles)
+
+        if self.args.verbose:
+            sys.stdout.write("Instance '{}' removed.\n".format(self.args.name))
+            sys.stdout.flush()
 
 
 if __name__ == "__main__":

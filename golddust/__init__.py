@@ -1,4 +1,4 @@
-# Copyright 2015-2016 John "LuaMilkshake" Marion
+# Copyright 2015-2017 John "LuaMilkshake" Marion
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ Minecraft Forge and texture packs).
 import json
 import os
 import platform
+import shutil
 
 
 _CONFIG_FILE_NAME = "config.json"
@@ -147,6 +148,31 @@ class GlobalConfig:
         target["mirrors"].append(mirror)
 
 
+class InstanceConfig:
+    """A game instance configuration.
+    """
+    def __init__(self, file_path):
+        self._file_path = file_path
+        """The path to the instance config."""
+        self.path = ""
+        """The path to this instance's game files on disk."""
+        self.longname = ""
+        """The long-form user-friendly name for this instance."""
+
+    def load(self):
+        """Load the config for `instance_name` into this config object.
+        """
+        with open(self._file_path, mode="r") as config_file:
+            self.__dict__.update(json.load(config_file))
+
+    def save(self):
+        """Save this configuration to disk.
+        """
+        # FIXME: I don't want to save the _file_path property into this file
+        with open(self._file_path, mode="w") as config_file:
+            json.dump(self.__dict__, config_file, sort_keys=True, indent=4)
+
+
 class Package:
     """A package managed by GoldDust"""
     def __init__(self):
@@ -184,3 +210,54 @@ class GoldDust:
         config = open(os.path.join(self.root, _CONFIG_FILE_NAME), "r")
         self.config.__dict__ = json.load(config)
         config.close()
+
+    def create_instance(self, name, longname, path):
+        """Create the files for a new game instance.
+
+        Takes:
+            name (str): The instance name. Must be alphanumeric and unique.
+            longname (str): The user-friendly name of this instance.
+            path (str): The path to the instance's files
+                        (eg '~/.minecraft'). Must not yet exist.
+
+        Raises:
+            ValueError: The instance name must be alphanumeric.
+            FileExistsError: Instance path already exists.
+        """
+        if not name.isalnum():
+            raise ValueError("Instance name must be alphanumeric.")
+        name = name.lower()
+
+        if os.path.exists(path):
+            raise FileExistsError("Instance path already exists.")
+        os.mkdir(path)
+
+        instance_file = os.path.join(self.root, "instances",
+                                     "{}.json".format(name))
+        if os.path.exists(instance_file):
+            raise FileExistsError("Instance name is already in use.")
+
+        instance_config = InstanceConfig(file_path=instance_file)
+        instance_config.longname = longname
+        instance_config.path = path
+        instance_config.save()
+
+    def remove_instance(self, instance_name, remove_game_files=False):
+        """Removes an instance and (optionally) its game files.
+
+        Takes:
+            instance_name (str): The instance name as defined
+                                 in <gdhome>/instances
+            remove_game_files (bool): `True` to also delete the game
+                                      installation directory.
+        """
+        config_file_name = os.path.join(self.root, "instances",
+                                        "{}.json".format(instance_name))
+
+        instance_config = InstanceConfig(config_file_name)
+        instance_config.load()
+
+        if remove_game_files:
+            shutil.rmtree(instance_config.path)
+
+        os.remove(config_file_name)
