@@ -78,7 +78,8 @@ class GDGameTool:
             self.gdhome = self.args.gdhome
 
         if not os.path.isdir(self.gdhome):
-            self.gd_not_installed()
+            if not self.gd_not_installed():
+                return
 
         self._golddust = golddust.GoldDust(self.gdhome)
 
@@ -90,12 +91,17 @@ class GDGameTool:
             argparser.print_usage()
 
     def gd_not_installed(self):
-        """Prompt the user (unless --noprompt) to install GoldDust."""
+        """Prompt the user (unless --noprompt) to install GoldDust.
+
+        Returns:
+            True for successful installation, False if the user
+            refused installation.
+        """
         if not self.args.noprompt:
             sys.stdout.write("GoldDust doesn't appear to be installed. ")
             sys.stdout.flush()
             if not gdcli.ask_confirm("Install GoldDust?", False):
-                return
+                return False
             # If the user never specified --gdhome, ask them where they
             # might want GoldDust installed.
             if not self.args.gdhome:
@@ -115,6 +121,8 @@ class GDGameTool:
         if self.args.verbose:
             sys.stdout.write("GoldDust successfully installed!\n")
             sys.stdout.flush()
+
+        return True
 
     def new_instance(self):
         """Create a game instance.
