@@ -26,9 +26,7 @@ class GDGameTool:
     """Manage modded game installations with GoldDust."""
     def __init__(self):
         self._golddust = None
-        argparser = argparse.ArgumentParser(description=("Manage modded game "
-                                                         "installations with "
-                                                         "GoldDust."))
+        argparser = argparse.ArgumentParser(description=(self.__doc__))
         argparser.add_argument('-H', '--gdhome',
                                help=("The location of the GoldDust "
                                      "installation. This contains things like "
