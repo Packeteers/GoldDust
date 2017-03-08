@@ -37,7 +37,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'gdgame=golddust.clitools.gdgame:GDGameTool'
+            'gdgame=golddust.clitools.gdgame:main'
         ],
     },
     keywords='minecraft forge mods packages',

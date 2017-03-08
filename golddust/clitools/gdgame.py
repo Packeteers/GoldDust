@@ -156,5 +156,15 @@ class GDGameTool:
             sys.stdout.flush()
 
 
-if __name__ == "__main__":
+def main():
+    # An independent function is needed here because console_scripts prints
+    # the return value of the script entry point, which for GDGameTool() is
+    # a class instance. (We want None so it doesn't print anything.)
     GDGameTool()
+
+
+if __name__ == "__main__":
+    # Just in case someone calls this directly. I call main() instead of
+    # instantiating GDGameTool() in case main() gets extra code at some point
+    # in the future.
+    main()
