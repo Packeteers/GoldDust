@@ -20,7 +20,6 @@ import os
 import sys
 
 import golddust
-import gdcli
 
 
 class GDGameTool:
@@ -100,14 +99,15 @@ class GDGameTool:
         if not self.args.noprompt:
             sys.stdout.write("GoldDust doesn't appear to be installed. ")
             sys.stdout.flush()
-            if not gdcli.ask_confirm("Install GoldDust?", False):
+            if not golddust.gdcli.ask_confirm("Install GoldDust?", False):
                 return False
             # If the user never specified --gdhome, ask them where they
             # might want GoldDust installed.
             if not self.args.gdhome:
-                self.gdhome = gdcli.ask_string("Where should GoldDust be "
-                                               "installed?",
-                                               self.gdhome)
+                self.gdhome = golddust.gdcli.ask_string("Where should "
+                                                        "GoldDust be "
+                                                        "installed?",
+                                                        self.gdhome)
 
         self.gdhome = os.path.abspath(os.path.expanduser(self.gdhome))
 
