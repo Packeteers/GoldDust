@@ -31,12 +31,9 @@ A GUI frontend to gdgame is planned to make management of installations easier
 for end users.
 
 
-## Formats
-
-
 ## License
 
-	Copyright 2014-2016 John "LuaMilkshake" Marion
+	Copyright 2014-2017 John "LuaMilkshake" Marion
 
 	Licensed under the Apache License, Version 2.0 (the "License");
 	you may not use this file except in compliance with the License.
