@@ -32,3 +32,17 @@ class Package:
     def sig_file(self):
         """The detached signature file name for this package."""
         return "{}.sig".format(self.tarball)
+
+
+class InstallScript:
+    """Package pre/post install action script.
+    """
+    def pre_install(self):
+        """Called before any files are installed.
+        """
+        pass
+
+    def post_install(self):
+        """Called after files are installed.
+        """
+        pass
