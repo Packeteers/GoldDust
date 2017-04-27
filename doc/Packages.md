@@ -17,6 +17,21 @@ Tree
       <optionally, more files that won't be automatically installed>
 ```
 
+package.json
+------------
+
+`package.json` is the metadata file for the package. Its fields are:
+
+- `packagename` (String): The package's name. This is case-sensitive and may
+  contain only alphanumeric characters and underscores (_).
+- `version` (String): XXX TODO versioning scheme (semver + epoch?)
+- `description` (String): A description of the contents of this package.
+- `website` (String): The package content's website (or similar).
+- `author` (String): The package content's author (for example, mod creator).
+- `packager` (String): Your name/contact as the packager.
+- `dependencies` (List of Strings): XXX Not yet implemented.
+
+
 Install Scripts
 ---------------
 
