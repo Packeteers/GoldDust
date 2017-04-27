@@ -36,9 +36,21 @@ class Package:
 
 class InstallScript:
     """Package pre/post install action script.
+
+    These functions are used to perform extra work beyond extracting
+    files.
+
+    Note that JAR modification should only be done using the `munge_jar`
+    function. This lets GoldDust know that you're modifying the JAR so it
+    can properly handle other JAR mod packages as well.
     """
     def pre_install(self):
         """Called before any files are installed.
+        """
+        pass
+
+    def munge_jar(self, jar):
+        """Modify the Minecraft JAR file.
         """
         pass
 
