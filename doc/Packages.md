@@ -41,3 +41,6 @@ implements the `pre_install` and `post_install` methods. These allow a package
 to run code before or after it's been installed. An example of the use of this
 is the Minecraft Forge package, which needs to make modifications to the
 Minecraft JAR.
+
+The contents of the `game` are extracted to the `.minecraft` (or equivalent)
+folder of the instance.
