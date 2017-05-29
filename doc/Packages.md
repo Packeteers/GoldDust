@@ -11,7 +11,7 @@ Tree
 ```
     <root>
       package.json
-      package.py
+      package.py (optional)
       game
         <package files>
       <optionally, more files that won't be automatically installed>
@@ -37,10 +37,10 @@ Install Scripts
 
 A package may optionally have a install script (as `package.py`). This script
 contains a class that extends `golddust.packages.InstallScript` which
-implements the `pre_install` and `post_install` methods. These allow a package
-to run code before or after it's been installed. An example of the use of this
-is the Minecraft Forge package, which needs to make modifications to the
-Minecraft JAR.
+implements the `pre_install`, `post_install`, and `munge_jar` methods. These
+allow a packageto run code before or after it's been installed. An example of
+the use of thisis the Minecraft Forge package, which needs to make
+modifications to theMinecraft JAR.
 
 The contents of the `game` are extracted to the `.minecraft` (or equivalent)
 folder of the instance.
