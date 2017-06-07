@@ -39,8 +39,8 @@ A package may optionally have a install script (as `package.py`). This script
 contains a class that extends `golddust.packages.InstallScript` which
 implements the `pre_install`, `post_install`, and `munge_jar` methods. These
 allow a packageto run code before or after it's been installed. An example of
-the use of thisis the Minecraft Forge package, which needs to make
-modifications to theMinecraft JAR.
+the use of this is the Minecraft Forge package, which needs to make
+modifications to the Minecraft JAR.
 
 The contents of the `game` are extracted to the `.minecraft` (or equivalent)
 folder of the instance.
