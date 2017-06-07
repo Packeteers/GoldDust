@@ -184,15 +184,13 @@ class GoldDust:
 
     def save_global_config(self):
         """Save the global configuration."""
-        config = open(os.path.join(self.root, _CONFIG_FILE_NAME), "w")
-        json.dump(self.config.__dict__, config, sort_keys=True, indent=4)
-        config.close()
+        with open(os.path.join(self.root, _CONFIG_FILE_NAME), "w") as config:
+            json.dump(self.config.__dict__, config, sort_keys=True, indent=4)
 
     def load_global_config(self):
         """Load the global configuration from a file."""
-        config = open(os.path.join(self.root, _CONFIG_FILE_NAME), "r")
-        self.config.__dict__ = json.load(config)
-        config.close()
+        with open(os.path.join(self.root, _CONFIG_FILE_NAME), "r") as config:
+            self.config.__dict__ = json.load(config)
 
     def create_instance(self, name, longname, path):
         """Create the files for a new game instance.
