@@ -59,13 +59,13 @@ class GDGameTool:
                                         "instance.")
 
         # 'deleteinstance' subcommand
-        newinst_parse = subparser.add_parser('deleteinstance')
-        newinst_parse.add_argument('-n', '--name',
+        delinst_parse = subparser.add_parser('deleteinstance')
+        delinst_parse.add_argument('-n', '--name',
                                    help="The short name of the instance. "
                                         "Should be alphanumeric and will be "
                                         "converted to lowercase.",
                                    required=True)
-        newinst_parse.add_argument('-R', '--deletefiles',
+        delinst_parse.add_argument('-R', '--deletefiles',
                                    help="Delete the game files as well.",
                                    action='store_true')
 
