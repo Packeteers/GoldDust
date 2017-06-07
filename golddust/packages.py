@@ -13,6 +13,9 @@
 # limitations under the License.
 
 
+import json
+
+
 """GoldDust Packages Classes/Utilities
 """
 
@@ -22,6 +25,11 @@ class Package:
     def __init__(self):
         self.name = ""
         self.version = ""
+        self.description = ""
+        self.website = ""
+        self.author = ""
+        self.packager = ""
+        self.dependencies = []
 
     @property
     def tarball(self):
@@ -32,6 +40,30 @@ class Package:
     def sig_file(self):
         """The detached signature file name for this package."""
         return "{}.sig".format(self.tarball)
+
+    @classmethod
+    def from_package_file(cls, file):
+        """Create a Package instance using a package.json file.
+
+        Takes:
+            file: The path to the `package.json` file.
+
+        Returns: A new Package instance with parameters set by the
+                 package.json file.
+        """
+        package = cls()
+
+        with open(file) as package_file:
+            metafile = json.load(package_file)
+
+        package.name = metafile['packagename']
+        package.version = metafile['version']
+        package.description = metafile['description']
+        package.website = metafile['website']
+        package.author = metafile['author']
+        package.packager = metafile['packager']
+        # TODO: Dependencies
+        return package
 
 
 class InstallScript:

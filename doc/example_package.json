@@ -1,0 +1,9 @@
+{
+    "packagename": "forge",
+    "version": "11.15.1.1902",
+    "description": "Minecraft Forge handles mod loading.",
+    "website": "http://www.minecraftforge.net/",
+    "author": "Minecraft Forge Authors",
+    "packager": "John Marion <jmariondev@gmail.com>",
+    "dependencies": []
+}
