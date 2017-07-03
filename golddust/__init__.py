@@ -154,30 +154,40 @@ class Instance:
     Game instances are essentially a `.minecraft` folder that is managed
     by GoldDust.
     """
-    def __init__(self, config_file):
-        self._config_file = config_file
+    def __init__(self):
+        self.config_file = ""
         """The path to the instance config."""
         self.path = ""
         """The path to this instance's game files on disk."""
         self.longname = ""
         """The long-form user-friendly name for this instance."""
 
-    def load(self):
-        """Load this instance from a config file.
-        """
-        with open(self._config_file, mode="r") as config:
-            loaded_config = json.load(config)
-            self.path = loaded_config["path"]
-            self.longname = loaded_config["longname"]
-
     def save(self):
         """Save this instance's configuration to disk.
         """
-        with open(self._config_file, mode="w") as config:
+        with open(self.config_file, mode="w") as config:
             config_out = {}
             config_out["path"] = self.path
             config_out["longname"] = self.longname
             json.dump(config_out, config, sort_keys=True, indent=4)
+
+    @classmethod
+    def from_config_file(cls, config_file):
+        """Create an instance from an instance file.
+
+        Takes:
+            config_file: The path to the JSON config file.
+
+        Returns:
+            An `Instance` instance configured with the config file supplied.
+        """
+        instance = cls()
+        with open(config_file, mode="r") as config:
+            loaded_config = json.load(config)
+            instance.config_file = config_file
+            instance.path = loaded_config["path"]
+            instance.longname = loaded_config["longname"]
+        return instance
 
 
 class GoldDust:
@@ -228,7 +238,8 @@ class GoldDust:
         if os.path.exists(instance_file):
             raise FileExistsError("Instance name is already in use.")
 
-        instance = Instance(config_file=instance_file)
+        instance = Instance()
+        instance.config_file = instance_file
         instance.longname = longname
         instance.path = path
         instance.save()
@@ -245,10 +256,8 @@ class GoldDust:
         config_file_name = os.path.join(self.root, "instances",
                                         "{}.json".format(instance_name))
 
-        instance = Instance(config_file=config_file_name)
-        instance.load()
-
         if remove_game_files:
+            instance = Instance.from_config_file(config_file_name)
             shutil.rmtree(instance.path)
 
         os.remove(config_file_name)
