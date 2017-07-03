@@ -148,11 +148,14 @@ class GlobalConfig:
         target["mirrors"].append(mirror)
 
 
-class InstanceConfig:
-    """A game instance configuration.
+class Instance:
+    """A game instance.
+
+    Game instances are essentially a `.minecraft` folder that is managed
+    by GoldDust.
     """
-    def __init__(self, file_path):
-        self._file_path = file_path
+    def __init__(self, config_file):
+        self._config_file = config_file
         """The path to the instance config."""
         self.path = ""
         """The path to this instance's game files on disk."""
@@ -160,17 +163,21 @@ class InstanceConfig:
         """The long-form user-friendly name for this instance."""
 
     def load(self):
-        """Load the config for `instance_name` into this config object.
+        """Load this instance from a config file.
         """
-        with open(self._file_path, mode="r") as config_file:
-            self.__dict__.update(json.load(config_file))
+        with open(self._config_file, mode="r") as config:
+            loaded_config = json.load(config)
+            self.path = loaded_config["path"]
+            self.longname = loaded_config["longname"]
 
     def save(self):
-        """Save this configuration to disk.
+        """Save this instance's configuration to disk.
         """
-        # FIXME: I don't want to save the _file_path property into this file
-        with open(self._file_path, mode="w") as config_file:
-            json.dump(self.__dict__, config_file, sort_keys=True, indent=4)
+        with open(self._config_file, mode="w") as config:
+            config_out = {}
+            config_out["path"] = self.path
+            config_out["longname"] = self.longname
+            json.dump(config_out, config, sort_keys=True, indent=4)
 
 
 class GoldDust:
@@ -209,6 +216,9 @@ class GoldDust:
             raise ValueError("Instance name must be alphanumeric.")
         name = name.lower()
 
+        # Expand '~' if the shell didn't already do it
+        path = os.path.expanduser(path)
+
         if os.path.exists(path):
             raise FileExistsError("Instance path already exists.")
         os.mkdir(path)
@@ -218,10 +228,10 @@ class GoldDust:
         if os.path.exists(instance_file):
             raise FileExistsError("Instance name is already in use.")
 
-        instance_config = InstanceConfig(file_path=instance_file)
-        instance_config.longname = longname
-        instance_config.path = path
-        instance_config.save()
+        instance = Instance(config_file=instance_file)
+        instance.longname = longname
+        instance.path = path
+        instance.save()
 
     def remove_instance(self, instance_name, remove_game_files=False):
         """Removes an instance and (optionally) its game files.
@@ -235,10 +245,10 @@ class GoldDust:
         config_file_name = os.path.join(self.root, "instances",
                                         "{}.json".format(instance_name))
 
-        instance_config = InstanceConfig(config_file_name)
-        instance_config.load()
+        instance = Instance(config_file=config_file_name)
+        instance.load()
 
         if remove_game_files:
-            shutil.rmtree(instance_config.path)
+            shutil.rmtree(instance.path)
 
         os.remove(config_file_name)
