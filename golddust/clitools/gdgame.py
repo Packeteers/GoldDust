@@ -69,6 +69,18 @@ class GDGameTool:
                                    help="Delete the game files as well.",
                                    action='store_true')
 
+        # TODO: 'listinstances' subcommand
+        # TODO: 'modifyinstance' subcommand
+
+        # 'pkginstall' subcommand
+        pkginst_parse = subparser.add_parser('pkginstall')
+        pkginst_parse.add_argument('-i', '--instance',
+                                   help="The instance name to install the "
+                                        "package to.",
+                                   required=True)
+        pkginst_parse.add_argument('package_name', metavar='PACKAGE',
+                                   help="The package to be installed.")
+
         self.args = argparser.parse_args()
         if not self.args.gdhome:
             self.gdhome = golddust.default_home_dir()
@@ -85,6 +97,8 @@ class GDGameTool:
             self.new_instance()
         elif self.args.subcommand == "deleteinstance":
             self.delete_instance()
+        elif self.args.subcommand == "pkginstall":
+            self.package_install()
         else:
             argparser.print_usage()
 
@@ -152,6 +166,11 @@ class GDGameTool:
         if self.args.verbose:
             sys.stdout.write("Instance '{}' removed.\n".format(self.args.name))
             sys.stdout.flush()
+
+    def package_install(self):
+        """Install a package.
+        """
+        print(self.args.package_name)
 
 
 def main():
