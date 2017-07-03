@@ -14,6 +14,7 @@
 
 
 import json
+import warnings
 
 
 """GoldDust Packages Classes/Utilities
@@ -64,6 +65,15 @@ class Package:
         package.packager = metafile['packager']
         # TODO: Dependencies
         return package
+
+    def verify(self):
+        """Verify the integrity of this package.
+
+        This verifies the package tarball using its detached PGP signature.
+        """
+        warnings.warn("Package verification is not yet implemented. "
+                      "You are working with an unverified package.")
+        return True
 
 
 class InstallScript:
