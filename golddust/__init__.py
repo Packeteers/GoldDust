@@ -165,10 +165,11 @@ class Instance:
     def save(self):
         """Save this instance's configuration to disk.
         """
+        config_out = {}
+        config_out["path"] = self.path
+        config_out["longname"] = self.longname
+
         with open(self.config_file, mode="w") as config:
-            config_out = {}
-            config_out["path"] = self.path
-            config_out["longname"] = self.longname
             json.dump(config_out, config, sort_keys=True, indent=4)
 
     @classmethod
@@ -182,11 +183,14 @@ class Instance:
             An `Instance` instance configured with the config file supplied.
         """
         instance = cls()
+
         with open(config_file, mode="r") as config:
             loaded_config = json.load(config)
-            instance.config_file = config_file
-            instance.path = loaded_config["path"]
-            instance.longname = loaded_config["longname"]
+
+        instance.config_file = config_file
+        instance.path = loaded_config["path"]
+        instance.longname = loaded_config["longname"]
+
         return instance
 
 
