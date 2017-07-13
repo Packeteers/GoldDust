@@ -170,6 +170,12 @@ class GDGameTool:
     def package_install(self):
         """Install a package.
         """
+        try:
+            inst = self._golddust.find_instance_by_name(self.args.instance)
+        except KeyError as ex:
+            print(ex)
+            return
+
         print(self.args.package_name)
 
 

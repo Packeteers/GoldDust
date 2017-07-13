@@ -162,6 +162,17 @@ class Instance:
         self.longname = ""
         """The long-form user-friendly name for this instance."""
 
+    @property
+    def name(self):
+        """The instance's name (derived from config file name)
+        """
+        # Split for both forward and back slashes
+        name = self.config_file.split('/')[-1]
+        name = name.split('\\')[-1]
+        # Remove '.json'
+        name = name[:-5]
+        return name
+
     def save(self):
         """Save this instance's configuration to disk.
         """
@@ -202,6 +213,24 @@ class GoldDust:
 
         if os.path.isfile(os.path.join(self.root, _CONFIG_FILE_NAME)):
             self.load_global_config()
+
+    @property
+    def instances(self):
+        """A list of the instances in the instances directory.
+        """
+        instance_dir = os.path.join(self.root, "instances")
+
+        for inst_file in os.listdir(instance_dir):
+            full_file = os.path.join(instance_dir, inst_file)
+
+            if not os.path.isfile(full_file):
+                continue
+
+            # Ensure file is JSON and the name is sane (>1 char)
+            if inst_file[-5:] != ".json" and len(inst_file) > 6:
+                continue
+
+            yield Instance.from_config_file(full_file)
 
     def save_global_config(self):
         """Save the global configuration."""
@@ -265,3 +294,21 @@ class GoldDust:
             shutil.rmtree(instance.path)
 
         os.remove(config_file_name)
+
+    def find_instance_by_name(self, instance_name):
+        """Get an instance using its name.
+
+        Takes:
+            instance_name (str): The name of the instance to find.
+
+        Returns:
+            (Instance) The instance associated with the given name.
+
+        Raises:
+            KeyError: There is no instance that matches the given name.
+        """
+        for instance in self.instances:
+            if instance.name == instance_name:
+                return instance
+
+        raise KeyError("Instance name not found.")
