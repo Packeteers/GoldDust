@@ -3,7 +3,8 @@ GoldDust Packages
 
 A package is an installable unit of code/resources/etc. Packages are sourced
 from a repository in the form of a bzipped tarball (`.tar.bz2`). They are also
-accompanied by a detached PGP signature (`.sig`).
+accompanied by a detached Ed25519 signature (`.sig`). This signature scheme
+is based on (and compatible with) OpenBSD's `signify` utility.
 
 Tree
 ----

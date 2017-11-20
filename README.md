@@ -13,8 +13,8 @@ package repositories, and installing packages.
 
 The `gdmake` tool creates packages from package specifications. The output of
 `gdmake` will be a `.tar.bz2` archive containing installable content to a game
-instance. A detached GPG signature (`.tar.bz2.sig`) will also be created to
-authenticate the package.
+instance. A detached Ed25519 signature (`.tar.bz2.sig`) will also be created to
+authenticate the package. This signature is based on OpenBSD's signify utility.
 
 
 ### `gdrepo` - Manage GoldDust repository
