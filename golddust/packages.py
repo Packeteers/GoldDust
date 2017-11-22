@@ -66,15 +66,6 @@ class Package:
         # TODO: Dependencies
         return package
 
-    def verify(self):
-        """Verify the integrity of this package.
-
-        This verifies the package tarball using its detached PGP signature.
-        """
-        warnings.warn("Package verification is not yet implemented. "
-                      "You are working with an unverified package.")
-        return True
-
 
 class InstallScript:
     """Package pre/post install action script.
